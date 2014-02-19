@@ -6,18 +6,12 @@ public class Course {
 	private int id;
 	private String name;
 	private int credits;
-	static String url = "jdbc:odbc:Registration";
-	static { 
-		try { 
-			Class.forName("sun.jdbc.odbc.JdbcOdbcDriver"); 
-		}
-		catch (Exception ignored) {} 
-	}
+	private static DatabaseConnection db = new DatabaseConnection();
+	private static Connection conn = null;
 
 	public static Course create(int id, String name, int credits) throws Exception {
-		Connection conn = null;
+		db.connect();
 		try {
-			conn = DriverManager.getConnection(url, "", "");
 			Statement statement = conn.createStatement();
 			statement.executeUpdate("DELETE FROM course WHERE name = '" + name + "';");
 			statement.executeUpdate("INSERT INTO course VALUES ('" + name + "', '" + credits + "');");
@@ -32,9 +26,8 @@ public class Course {
 	}
 
 	public static Course find(String name) {
-		Connection conn = null;
+		db.connect();
 		try {
-			conn = DriverManager.getConnection(url, "", "");
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery("SELECT * FROM course WHERE Name = '" + name + "';");
 			if (!result.next()) return null;
@@ -54,9 +47,8 @@ public class Course {
 	}
 
 	public void update() throws Exception {
-		Connection conn = null;
+		db.connect();
 		try {
-			conn = DriverManager.getConnection(url, "", "");
 			Statement statement = conn.createStatement();
 			statement.executeUpdate("DELETE FROM COURSE WHERE name = '" + name + "';");
 			statement.executeUpdate("INSERT INTO course VALUES('" + name + "','" + credits + "');");
@@ -69,12 +61,12 @@ public class Course {
 		}
 	}
 
-	Course(int id, String name, int credits) {
+	public Course(int id, String name, int credits) {
 		this.id = id;
 		this.name = name;
 		this.credits = credits;
 	}
-	
+
 	public int getId() {
 		return id;
 	}

@@ -8,18 +8,12 @@ public class Offering {
 	private String day;
 	private String time;
 	private String daysTimes;
-	static String url = "jdbc:odbc:Registration";
-	static { 
-		try { 
-			Class.forName("sun.jdbc.odbc.JdbcOdbcDriver"); 
-		}
-		catch (Exception ignored) {} 
-	}
+	private static DatabaseConnection db = new DatabaseConnection();
+	private static Connection conn = null;
 
 	public static Offering create(Course course, String daysTimesCsv) throws Exception {
-		Connection conn = null;
+		db.connect();
 		try {
-			conn = DriverManager.getConnection(url, "", "");
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery("SELECT MAX(ID) FROM offering;");
 			result.next();
@@ -27,18 +21,17 @@ public class Offering {
 			statement.executeUpdate("INSERT INTO offering VALUES ('"+ newId + "','" + course.getName() + "','" + daysTimesCsv + " " + "');");
 			return new Offering(newId, course, daysTimesCsv);
 		} 
-		finally {
-			try { 
-				conn.close(); 
-			} 
-			catch (Exception ignored) {}
-		}
+			finally {
+				try { 
+					conn.close(); 
+				} 
+				catch (Exception ignored) {}
+			}
 	}
 
 	public static Offering find(int id) {
-		Connection conn = null;
+		db.connect();
 		try {
-			conn = DriverManager.getConnection(url, "", "");
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery("SELECT * FROM offering WHERE ID =" + id + ";");
 			if (result.next() == false)
@@ -58,11 +51,10 @@ public class Offering {
 	}
 
 	public void update() throws Exception {
-		Connection conn = null;
+		db.connect();
 		try {
-			conn = DriverManager.getConnection(url, "", "");
 			Statement statement = conn.createStatement();
-			statement.executeUpdate("DELETE FROM Offering WHERE ID=" + id + ";");
+			statement.executeUpdate("DELETE FROM Offering WHERE ID =" + id + ";");
 			statement.executeUpdate("INSERT INTO Offering VALUES('" + id + "','" + course.getName() + "','" + daysTimes + "');");
 		} 
 		finally {
