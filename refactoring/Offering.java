@@ -1,13 +1,15 @@
 package refactoring;
 
 import java.sql.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class Offering {
 	private int id;
 	private Course course;
+	private String daysTimes;
 	private String day;
 	private String time;
-	private String daysTimes;
 	private static DatabaseConnection db = new DatabaseConnection();
 	private static Connection conn = null;
 
@@ -36,9 +38,9 @@ public class Offering {
 			ResultSet result = statement.executeQuery("SELECT * FROM offering WHERE ID =" + id + ";");
 			if (result.next() == false)
 				return null;
-			String courseName = result.getString("Course");
+			String courseName = result.getString("Name");
 			Course course = Course.find(courseName);
-			String dateTime = result.getString("DateTime");
+			String dateTime = result.getString("Day");
 			conn.close();
 			return new Offering(id, course, dateTime);
 		} 
@@ -69,6 +71,7 @@ public class Offering {
 		this.id = id;
 		this.course = course;
 		this.daysTimes = daysTimesCsv;
+		String[] daysTimesString = daysTimesCsv.split(",");
 	}
 
 	public int getId() {
