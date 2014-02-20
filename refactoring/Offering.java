@@ -1,8 +1,6 @@
 package refactoring;
 
 import java.sql.*;
-import java.util.Arrays;
-import java.util.List;
 
 public class Offering {
 	private int id;
@@ -13,15 +11,15 @@ public class Offering {
 	private static DatabaseConnection db = new DatabaseConnection();
 	private static Connection conn = null;
 
-	public static Offering create(Course course, String daysTimesCsv) throws Exception {
+	public static Offering create(Course course, String daysTimesString) throws Exception {
 		db.connect();
 		try {
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery("SELECT MAX(ID) FROM offering;");
 			result.next();
 			int newId = 1 + result.getInt(1);
-			statement.executeUpdate("INSERT INTO offering VALUES ('"+ newId + "','" + course.getName() + "','" + daysTimesCsv + " " + "');");
-			return new Offering(newId, course, daysTimesCsv);
+			statement.executeUpdate("INSERT INTO offering VALUES ('"+ newId + "','" + course.getName() + "','" + daysTimesString + " " + "');");
+			return new Offering(newId, course, daysTimesString);
 		} 
 			finally {
 				try { 
