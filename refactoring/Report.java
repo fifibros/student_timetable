@@ -5,6 +5,7 @@ import java.util.*;
 public class Report {
 	
 	public Report() {
+		
 	}
 
 	Hashtable<Integer, ArrayList<String>> offeringToName = new Hashtable<Integer, ArrayList<String>>();
